@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
-from gaming import randomize_teams
+from gaming import randomize_teams, randomize_gods, latest_god
 
 load_dotenv()
 BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
@@ -27,10 +27,12 @@ async def help(ctx):
     msg="# Hi I'm BellaBot, a Discord bot made by Belladonya!\n"
     msg += "# Here are my commands:\n"
     msg += "## General Commands:\n"
-    msg += "!bella-hello - Greet the user, acts as a primitive health check\n"
-    msg += "!bella-help - Show this help message\n"
+    msg += "!bella-hello - Greet the user, acts as a primitive health check\n\n"
+    msg += "!bella-help - Show this help message\n\n"
     msg += "## Gaming Commands:\n"
-    msg += "!bella-teams <team_count> <player1> <player2> ... - Randomly divides players into teams\n"
+    msg += "!bella-teams <team_count> <player1> <player2> ... - Randomly divides players into teams\n\n"
+    msg += "!bella-gods <team_count> <aspects> <player1> <player2> ... - Randomly divides players into teams and assigns random Smite 2 gods to each player. Aspects can be true or false\n\n"
+    msg += "!bella-latest - Shows the latest god added to this bot\n\n"
     await ctx.send(msg)
 
 @bot.command()
@@ -42,5 +44,26 @@ async def teams(ctx, team_count: int, *players):
     teams = await randomize_teams(" ".join(players), team_count)
     team_messages = [f"**Team {i+1}:** {', '.join(team)}" for i, team in enumerate(teams)]
     await ctx.send("\n".join(team_messages))
+
+@bot.command()
+async def gods(ctx, team_count: int, aspects: bool, *players):
+    if team_count <= 1:
+        await ctx.send("Team count must be at least 2.")
+        return
+
+    teams = await randomize_teams(" ".join(players), team_count)
+    team_gods = await randomize_gods(teams, aspects)
+    
+    god_messages = []
+    for i, (team, gods) in enumerate(zip(teams, team_gods)):
+        player_god_pairs = [f"{player} - {god}" for player, god in zip(team, gods)]
+        god_messages.append(f"**Team {i+1}:** {', '.join(player_god_pairs)}")
+    
+    await ctx.send("\n".join(god_messages))
+
+@bot.command()
+async def latest(ctx):
+    god = await latest_god()
+    await ctx.send(f"bella-gods latest god: **{god}**")
 
 bot.run(BOT_TOKEN)
