@@ -9,7 +9,7 @@ BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = commands.Bot(command_prefix="!bella-", intents=intents)
+bot = commands.Bot(command_prefix="!bella-", intents=intents, help_command=None)
 
 @bot.event
 async def on_ready():
@@ -20,5 +20,14 @@ async def on_ready():
 @bot.command()
 async def hello(ctx):
     await ctx.send("she glup on my shitto til i goober")
+
+@bot.command()
+async def help(ctx):
+    msg="# Hi I'm BellaBot, a Discord bot made by Belladonya!\n"
+    msg += "# Here are my commands:\n"
+    msg += "## General Commands:\n"
+    msg += "!bella-hello - Greet the user, acts as a primitive health check\n"
+    msg += "!bella-help - Show this help message\n"
+    await ctx.send(msg)
 
 bot.run(BOT_TOKEN)
