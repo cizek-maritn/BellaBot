@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
-from gaming import randomize_teams, randomize_gods, latest_god
+from gaming import randomize_teams, randomize_gods, latest_god, gacha_links, random_god
 
 load_dotenv()
 BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
@@ -10,7 +10,7 @@ BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = commands.Bot(command_prefix="!bella-", intents=intents, help_command=None)
+bot = commands.Bot(command_prefix="!bella-", intents=intents, help_command=None, case_insensitive=True)
 
 @bot.event
 async def on_ready():
@@ -32,7 +32,9 @@ async def help(ctx):
     msg += "## Gaming Commands:\n"
     msg += "!bella-teams <team_count> <player1> <player2> ... - Randomly divides players into teams\n\n"
     msg += "!bella-gods <team_count> <aspects> <player1> <player2> ... - Randomly divides players into teams and assigns random Smite 2 gods to each player. Aspects can be true or false\n\n"
-    msg += "!bella-latest - Shows the latest god added to this bot\n\n"
+    msg += "!bella-latestGod - Shows the latest god added to this bot\n\n"
+    msg += "!bella-randomGod - Shows a randomly selected god from Smite 2\n\n"
+    msg += "!bella-gacha - Shows a list of useful gacha game links\n\n"
     await ctx.send(msg)
 
 @bot.command()
@@ -62,8 +64,18 @@ async def gods(ctx, team_count: int, aspects: bool, *players):
     await ctx.send("\n".join(god_messages))
 
 @bot.command()
-async def latest(ctx):
+async def latestGod(ctx):
     god = await latest_god()
     await ctx.send(f"bella-gods latest god: **{god}**")
+
+@bot.command()
+async def randomGod(ctx):
+    god = await random_god()
+    await ctx.send(f"Your random god is: **{god}**")
+
+@bot.command()
+async def gacha(ctx):
+    links = await gacha_links()
+    await ctx.send(links)
 
 bot.run(BOT_TOKEN)
