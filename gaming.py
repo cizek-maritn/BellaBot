@@ -1,4 +1,5 @@
 import random
+from urllib.parse import quote
 
 GODS = [
     "Achilles", "Agni", "Aladdin", "Amaterasu", "Anhur", "Anubis", "Aphrodite", 
@@ -143,6 +144,18 @@ async def random_build(god):
         msg += f"Tier III: {random.choice(VULCAN_T3)}"
 
     return msg
+
+async def get_item_info(item_name):
+    # Remove "ACTIVE: " prefix if present
+    clean_name = item_name.replace("ACTIVE: ", "")
+    
+    # Format the name for the wiki URL (spaces to underscores, special characters encoded)
+    wiki_name = clean_name.replace(" ", "_")
+    wiki_name = wiki_name.replace("'", "%27")  # Encode apostrophes
+    url_encoded_name = quote(wiki_name, safe="")
+    wiki_url = f"https://wiki.smite2.com/w/{url_encoded_name}"
+    
+    return f"**{clean_name}**\n{wiki_url}"
 
 async def gacha_links():
     msg = "## Honkai Star Rail\n"

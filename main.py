@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
-from gaming import random_build, randomize_teams, randomize_gods, latest_god, gacha_links, random_god
+from gaming import random_build, randomize_teams, randomize_gods, latest_god, gacha_links, random_god, get_item_info
 
 load_dotenv()
 BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
@@ -36,6 +36,7 @@ async def help(ctx):
     msg += "!bella-randomGod - Shows a randomly selected god from Smite 2\n\n"
     msg += "!bella-randomBuild <god> - Shows a random build for the specified god\n\n"
     msg += "!bella-randomGodBuild - Shows a random god and a random build for that god\n\n"
+    msg += "!bella-itemInfo <item> - Creates a link to the item's wiki page\n\n"
     msg += "!bella-gacha - Shows a list of useful gacha game links\n\n"
     await ctx.send(msg)
 
@@ -85,6 +86,11 @@ async def randomGodBuild(ctx):
     god = await random_god()
     build_msg = await random_build(god)
     await ctx.send(build_msg)
+
+@bot.command()
+async def itemInfo(ctx, *, item: str):
+    info = await get_item_info(item)
+    await ctx.send(info)
 
 @bot.command()
 async def gacha(ctx):
