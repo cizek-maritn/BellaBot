@@ -146,18 +146,18 @@ async def random_build(god):
 
 async def gacha_links():
     msg = "## Honkai Star Rail\n"
-    msg += "Prydwen, List of HSR characters - https://www.prydwen.gg/star-rail/characters/\n"
-    msg += "Star Rail Station, Warp tracker - https://starrailstation.com/en/warp#char_event\n"
-    msg += "Fribbels, Relic scorer and build evaluator - https://fribbels.github.io/hsr-optimizer\n"
-    msg += "Gachabase, beta news and info - https://gachabase.net/\n"
-    msg += "The Genius Archive, endgame clears and info - https://theherta.com/\n"
-    msg += "Cat Cake Log, cat cake collection info - https://catcake.hoshimi.io/\n"
+    msg += "Prydwen, List of HSR characters - <https://www.prydwen.gg/star-rail/characters/>\n"
+    msg += "Star Rail Station, Warp tracker - <https://starrailstation.com/en/warp#char_event>\n"
+    msg += "Fribbels, Relic scorer and build evaluator - <https://fribbels.github.io/hsr-optimizer>\n"
+    msg += "Gachabase, beta news and info - <https://gachabase.net/>\n"
+    msg += "The Genius Archive, endgame clears and info - <https://theherta.com/>\n"
+    msg += "Cat Cake Log, cat cake collection info - <https://catcake.hoshimi.io/>\n"
 
     msg += "## Wuthering Waves\n"
-    msg += "Prydwen, List of WW characters - https://www.prydwen.gg/wuthering-waves/characters\n"
-    msg += "Wuwa Tracker, Warp tracker - https://wuwatracker.com/\n"
-    msg += "Wuwaflex Echo scorer - https://wuwaflex.com/\n"
-    msg += "Wuwatracker Event Calendar - https://wuwatracker.com/timeline\n"
-    msg += "Wuwa Interactive Map - https://wuthering-waves-map.appsample.com/\n"
+    msg += "Prydwen, List of WW characters - <https://www.prydwen.gg/wuthering-waves/characters>\n"
+    msg += "Wuwa Tracker, Warp tracker - <https://wuwatracker.com/>\n"
+    msg += "Wuwaflex Echo scorer - <https://wuwaflex.com/>\n"
+    msg += "Wuwatracker Event Calendar - <https://wuwatracker.com/timeline>\n"
+    msg += "Wuwa Interactive Map - <https://wuthering-waves-map.appsample.com/>\n"
 
     return msg
