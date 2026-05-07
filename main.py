@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
-from gaming import randomize_teams, randomize_gods, latest_god, gacha_links, random_god
+from gaming import random_build, randomize_teams, randomize_gods, latest_god, gacha_links, random_god
 
 load_dotenv()
 BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
@@ -34,6 +34,8 @@ async def help(ctx):
     msg += "!bella-gods <team_count> <aspects> <player1> <player2> ... - Randomly divides players into teams and assigns random Smite 2 gods to each player. Aspects can be true or false\n\n"
     msg += "!bella-latestGod - Shows the latest god added to this bot\n\n"
     msg += "!bella-randomGod - Shows a randomly selected god from Smite 2\n\n"
+    msg += "!bella-randomBuild <god> - Shows a random build for the specified god\n\n"
+    msg += "!bella-randomGodBuild - Shows a random god and a random build for that god\n\n"
     msg += "!bella-gacha - Shows a list of useful gacha game links\n\n"
     await ctx.send(msg)
 
@@ -72,6 +74,17 @@ async def latestGod(ctx):
 async def randomGod(ctx):
     god = await random_god()
     await ctx.send(f"Your random god is: **{god}**")
+
+@bot.command()
+async def randomBuild(ctx, god: str):
+    build_msg = await random_build(god)
+    await ctx.send(build_msg)
+
+@bot.command()
+async def randomGodBuild(ctx):
+    god = await random_god()
+    build_msg = await random_build(god)
+    await ctx.send(build_msg)
 
 @bot.command()
 async def gacha(ctx):
