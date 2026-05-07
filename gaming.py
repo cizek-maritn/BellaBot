@@ -152,4 +152,12 @@ async def gacha_links():
     msg += "Gachabase, beta news and info - https://gachabase.net/\n"
     msg += "The Genius Archive, endgame clears and info - https://theherta.com/\n"
     msg += "Cat Cake Log, cat cake collection info - https://catcake.hoshimi.io/\n"
+
+    msg += "## Wuthering Waves\n"
+    msg += "Prydwen, List of WW characters - https://www.prydwen.gg/wuthering-waves/characters\n"
+    msg += "Wuwa Tracker, Warp tracker - https://wuwatracker.com/\n"
+    msg += "Wuwaflex Echo scorer - https://wuwaflex.com/\n"
+    msg += "Wuwatracker Event Calendar - https://wuwatracker.com/timeline\n"
+    msg += "Wuwa Interactive Map - https://wuthering-waves-map.appsample.com/\n"
+
     return msg
