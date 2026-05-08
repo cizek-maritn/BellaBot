@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
-from gaming import random_build, randomize_teams, randomize_gods, latest_god, gacha_links, random_god, get_item_info
+from gaming import random_build, randomize_teams, randomize_gods, latest_god, gacha_links, random_god, get_item_info, hsr_banners
 
 load_dotenv()
 BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
@@ -26,6 +26,7 @@ async def hello(ctx):
 async def help(ctx):
     msg="# Hi I'm BellaBot, a Discord bot made by Belladonya!\n"
     msg += "# Here are my commands:\n"
+    msg += "Note that commands are case insensitive\n\n"
     msg += "## General Commands:\n"
     msg += "!bella-hello - Greet the user, acts as a primitive health check\n\n"
     msg += "!bella-help - Show this help message\n\n"
@@ -38,6 +39,7 @@ async def help(ctx):
     msg += "!bella-randomGodBuild - Shows a random god and a random build for that god\n\n"
     msg += "!bella-itemInfo <item> - Creates a link to the item's wiki page\n\n"
     msg += "!bella-gacha - Shows a list of useful gacha game links\n\n"
+    msg += "!bella-hsrBanners - Shows the current and upcoming Honkai Star Rail banners\n\n"
     await ctx.send(msg)
 
 @bot.command()
@@ -96,5 +98,10 @@ async def itemInfo(ctx, *, item: str):
 async def gacha(ctx):
     links = await gacha_links()
     await ctx.send(links)
+
+@bot.command()
+async def hsrBanners(ctx):
+    banners = await hsr_banners()
+    await ctx.send(banners)
 
 bot.run(BOT_TOKEN)

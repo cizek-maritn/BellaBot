@@ -1,5 +1,8 @@
 import random
 from urllib.parse import quote
+import re
+from bs4 import BeautifulSoup
+import cloudscraper
 
 GODS = [
     "Achilles", "Agni", "Aladdin", "Amaterasu", "Anhur", "Anubis", "Aphrodite", 
@@ -174,3 +177,77 @@ async def gacha_links():
     msg += "Wuwa Interactive Map - <https://wuthering-waves-map.appsample.com/>\n"
 
     return msg
+
+async def hsr_banners():
+    url = "https://game8.co/games/Honkai-Star-Rail/archives/408381"
+    scraper = cloudscraper.create_scraper()
+    try:
+        res = scraper.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+        res.raise_for_status()
+    except Exception as e:
+        return {"error": f"fetch_failed: {e}", "url": url}
+
+    soup = BeautifulSoup(res.text, "html.parser")
+
+    # Find the table containing Version / Banner Schedule
+    table = None
+    for tbl in soup.find_all("table"):
+        header = tbl.find("th")
+        if header and "Version" in header.get_text(" ", strip=True):
+            table = tbl
+            break
+
+    if table is None:
+        return {"error": "table_not_found", "url": url}
+
+    banners = []
+    for tr in table.find_all("tr"):
+        # skip header rows
+        if tr.find("th"):
+            continue
+        tds = tr.find_all("td")
+        if len(tds) < 2:
+            continue
+
+        version_text = tds[0].get_text(" ", strip=True)
+
+        chars_td = tds[1]
+        chars = []
+        # preferred: divs with class 'align' contain character anchors
+        for div in chars_td.find_all(class_=lambda c: c and "align" in c):
+            a = div.find("a")
+            if not a:
+                continue
+            name = a.get_text(" ", strip=True)
+            if name:
+                chars.append(name)
+
+        # fallback: find anchors with images directly under the td
+        if not chars:
+            for a in chars_td.find_all("a"):
+                # skip phase links like 'Phase 1'
+                txt = a.get_text(" ", strip=True)
+                if re.match(r"Phase\s*\d", txt, re.I):
+                    continue
+                # skip links that look like dates
+                if re.search(r"\d{1,2}/\d{1,2}/\d{2,4}", txt):
+                    continue
+                if txt:
+                    chars.append(txt)
+
+        # dedupe while preserving order
+        seen = set()
+        uniq = []
+        for c in chars:
+            if c not in seen:
+                seen.add(c)
+                uniq.append(c)
+
+        banners.append({"version": version_text, "characters": uniq})
+
+    msg = f"## Latest HSR banners (source: {url}):\n"
+    for b in banners:
+        msg += f"- **{b['version']}**: {', '.join(b['characters'])}\n"
+
+    return msg
+
