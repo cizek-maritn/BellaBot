@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import os
+import datetime
 from dotenv import load_dotenv
 from gaming import random_build, randomize_teams, randomize_gods, latest_god, gacha_links, random_god, get_item_info, hsr_banners
 
@@ -26,20 +27,20 @@ async def hello(ctx):
 async def help(ctx):
     msg="# Hi I'm BellaBot, a Discord bot made by Belladonya!\n"
     msg += "# Here are my commands:\n"
-    msg += "Note that commands are case insensitive\n\n"
-    msg += "## General Commands:\n"
-    msg += "!bella-hello - Greet the user, acts as a primitive health check\n\n"
-    msg += "!bella-help - Show this help message\n\n"
-    msg += "## Gaming Commands:\n"
-    msg += "!bella-teams <team_count> <player1> <player2> ... - Randomly divides players into teams\n\n"
-    msg += "!bella-gods <team_count> <aspects> <player1> <player2> ... - Randomly divides players into teams and assigns random Smite 2 gods to each player. Aspects can be true or false\n\n"
-    msg += "!bella-latestGod - Shows the latest god added to this bot\n\n"
-    msg += "!bella-randomGod - Shows a randomly selected god from Smite 2\n\n"
-    msg += "!bella-randomBuild <god> - Shows a random build for the specified god\n\n"
-    msg += "!bella-randomGodBuild - Shows a random god and a random build for that god\n\n"
-    msg += "!bella-itemInfo <item> - Creates a link to the item's wiki page\n\n"
-    msg += "!bella-gacha - Shows a list of useful gacha game links\n\n"
-    msg += "!bella-hsrBanners - Shows the current and upcoming Honkai Star Rail banners\n\n"
+    msg += "❗Note that commands are case insensitive\n"
+    msg += "## 💜 General Commands:\n"
+    msg += "👋 !bella-hello - Greet the user, acts as a primitive health check\n\n"
+    msg += "❓ !bella-help - Show this help message\n\n"
+    msg += "## 🎮 Gaming Commands:\n"
+    msg += "⚔️ !bella-teams <team_count> <player1> <player2> ... - Randomly divides players into teams\n\n"
+    msg += "🔮 !bella-gods <team_count> <aspects> <player1> <player2> ... - Randomly divides players into teams and assigns random Smite 2 gods to each player. Aspects can be true or false\n\n"
+    msg += "🆕 !bella-latestgod - Shows the latest god added to this bot\n\n"
+    msg += "🎲 !bella-randomgod - Shows a randomly selected god from Smite 2\n\n"
+    msg += "🏗️ !bella-randombuild <god> - Shows a random build for the specified god\n\n"
+    msg += "🃏 !bella-randomgodbuild - Shows a random god and a random build for that god\n\n"
+    msg += "📝 !bella-iteminfo <item> - Creates a link to the item's wiki page\n\n"
+    msg += "🎰 !bella-gacha - Shows a list of useful gacha game links\n\n"
+    msg += "🌠 !bella-hsrbanners - Shows the current and upcoming Honkai Star Rail banners\n\n"
     await ctx.send(msg)
 
 @bot.command()
@@ -85,8 +86,11 @@ async def randomBuild(ctx, god: str):
 
 @bot.command()
 async def randomGodBuild(ctx):
+    start = datetime.datetime.now()
     god = await random_god()
     build_msg = await random_build(god)
+    end = datetime.datetime.now()
+    print(f"randomGodBuild execution time: {(end - start).total_seconds()} seconds")
     await ctx.send(build_msg)
 
 @bot.command()
@@ -101,7 +105,10 @@ async def gacha(ctx):
 
 @bot.command()
 async def hsrBanners(ctx):
+    start = datetime.datetime.now()
     banners = await hsr_banners()
+    end = datetime.datetime.now()
+    print(f"hsrBanners execution time: {(end - start).total_seconds()} seconds")
     await ctx.send(banners)
 
 bot.run(BOT_TOKEN)
