@@ -251,3 +251,93 @@ async def hsr_banners():
 
     return msg
 
+async def wuwa_banners():
+    url = "https://game8.co/games/Wuthering-Waves/archives/453303"
+    scraper = cloudscraper.create_scraper()
+    try:
+        res = scraper.get(url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+        res.raise_for_status()
+    except Exception as e:
+        return {"error": f"fetch_failed: {e}", "url": url}
+
+    soup = BeautifulSoup(res.text, "html.parser")
+
+    def clean_text(value):
+        return re.sub(r"\s+", " ", value or "").strip()
+
+    def extract_banner_title(td):
+        anchor = td.find("a")
+        if anchor:
+            return clean_text(anchor.get_text(" ", strip=True))
+        return clean_text(td.get_text(" ", strip=True))
+
+    def extract_featured_names(td):
+        names = []
+        align_blocks = td.find_all(class_=lambda c: c and "align" in c)
+
+        for block in align_blocks:
+            text = clean_text(block.get_text(" ", strip=True))
+            if not text:
+                continue
+            if re.match(r"^Phase\s*\d+$", text, re.I):
+                continue
+            if re.search(r"\d{1,2}/\d{1,2}/\d{2,4}", text):
+                continue
+            if text not in names:
+                names.append(text)
+
+        return names
+
+    def parse_banner_table(table):
+        rows = []
+        for tr in table.find_all("tr"):
+            if tr.find("th"):
+                continue
+            tds = tr.find_all("td")
+            if len(tds) < 2:
+                continue
+
+            banner_title = extract_banner_title(tds[0])
+            featured = extract_featured_names(tds[1])
+
+            if banner_title and featured:
+                rows.append({"banner": banner_title, "featured": featured})
+        return rows
+
+    tables = []
+    for table in soup.find_all("table"):
+        header_texts = [clean_text(th.get_text(" ", strip=True)) for th in table.find_all("th")]
+        header_joined = " | ".join(header_texts)
+        if "banner" in header_joined.lower() and "featured characters" in header_joined.lower():
+            tables.append(table)
+
+    if len(tables) < 2:
+        # Fallback: use the first two banner tables on the page if the header text is wrapped oddly.
+        banner_tables = []
+        for table in soup.find_all("table"):
+            rows = table.find_all("tr")
+            if not rows:
+                continue
+            first_row_headers = [clean_text(th.get_text(" ", strip=True)) for th in rows[0].find_all("th")]
+            if len(first_row_headers) >= 2 and "banner" in first_row_headers[0].lower():
+                banner_tables.append(table)
+        if len(banner_tables) >= 2:
+            tables = banner_tables[:2]
+
+    if not tables:
+        return {"error": "tables_not_found", "url": url}
+
+    current = parse_banner_table(tables[0])
+    upcoming = parse_banner_table(tables[1]) if len(tables) > 1 else []
+
+    msg = f"## Latest Wuthering Waves banners (source: {url}):\n"
+    msg += "### Current\n"
+    for row in current:
+        msg += f"- **{row['banner']}**: {', '.join(row['featured'])}\n"
+
+    if upcoming:
+        msg += "### Upcoming\n"
+        for row in upcoming:
+            msg += f"- **{row['banner']}**: {', '.join(row['featured'])}\n"
+
+    return msg

@@ -3,7 +3,8 @@ from discord.ext import commands
 import os
 import datetime
 from dotenv import load_dotenv
-from gaming import random_build, randomize_teams, randomize_gods, latest_god, gacha_links, random_god, get_item_info, hsr_banners
+from gaming import get_item_info, hsr_banners, random_build, randomize_teams, randomize_gods, latest_god, gacha_links, random_god, wuwa_banners
+
 
 load_dotenv()
 BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
@@ -41,6 +42,7 @@ async def help(ctx):
     msg += "📝 !bella-iteminfo <item> - Creates a link to the item's wiki page\n\n"
     msg += "🎰 !bella-gacha - Shows a list of useful gacha game links\n\n"
     msg += "🌠 !bella-hsrbanners - Shows the current and upcoming Honkai Star Rail banners\n\n"
+    msg += "🌠 !bella-wuwabanners - Shows the current and upcoming Wuthering Waves banners\n\n"
     await ctx.send(msg)
 
 @bot.command()
@@ -109,6 +111,14 @@ async def hsrBanners(ctx):
     banners = await hsr_banners()
     end = datetime.datetime.now()
     print(f"hsrBanners execution time: {(end - start).total_seconds()} seconds")
+    await ctx.send(banners)
+
+@bot.command()
+async def wuwaBanners(ctx):
+    start = datetime.datetime.now()
+    banners = await wuwa_banners()
+    end = datetime.datetime.now()
+    print(f"wuwaBanners execution time: {(end - start).total_seconds()} seconds")
     await ctx.send(banners)
 
 bot.run(BOT_TOKEN)
