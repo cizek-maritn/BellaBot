@@ -24,6 +24,11 @@ async def on_ready():
 async def hello(ctx):
     await ctx.send("she glup on my shitto til i goober")
 
+# if this bot grows considerably larger, itll be necessary to place commands in separate files
+
+# eventually it will make sense to load text from a file instead of this,
+# but right now the bot is small enough for this to be manageable
+# loading from a file would also allow for pagination
 @bot.command()
 async def help(ctx):
     msg="# Hi I'm BellaBot, a Discord bot made by Belladonya!\n"
@@ -47,7 +52,7 @@ async def help(ctx):
 
 @bot.command()
 async def teams(ctx, team_count: int, *players):
-    if team_count <= 1:
+    if team_count < 2:
         await ctx.send("Team count must be at least 2.")
         return
 
@@ -57,7 +62,7 @@ async def teams(ctx, team_count: int, *players):
 
 @bot.command()
 async def gods(ctx, team_count: int, aspects: bool, *players):
-    if team_count <= 1:
+    if team_count < 2:
         await ctx.send("Team count must be at least 2.")
         return
 
@@ -107,6 +112,7 @@ async def gacha(ctx):
 
 @bot.command()
 async def hsrBanners(ctx):
+    # web scraaping can be slow so i added this to monitor 
     start = datetime.datetime.now()
     banners = await hsr_banners()
     end = datetime.datetime.now()

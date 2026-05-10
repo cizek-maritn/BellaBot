@@ -4,6 +4,9 @@ import re
 from bs4 import BeautifulSoup
 import cloudscraper
 
+# this data could be loaded from a file or database in the future, but for now it's just hardcoded here for simplicity.
+# It also needs to be updated manually which is a pain, but new god releases will slow down over time.
+
 GODS = [
     "Achilles", "Agni", "Aladdin", "Amaterasu", "Anhur", "Anubis", "Aphrodite", 
     "Apollo", "Ares", "Artemis", "Artio", "Athena", "Atlas", "Awilix", "Bacchus", 
@@ -69,6 +72,7 @@ VULCAN_T3 = ["Masterwork Mod", "Surplus Mod", "Seismic Mod"]
 RATATOSKR = ["Ashwort Acorn", "Briskberry Acorn", "Thistlethorn Acorn"]
 
 async def randomize_teams(players, team_count):
+    # remove commas in case user separates players with commas
     players = players.replace(",", "")
     player_list = players.split(" ")
     random.shuffle(player_list)
@@ -99,6 +103,7 @@ async def random_god():
     return random.choice(GODS)
 
 async def random_build(god):
+    # everyone has one starter item and one relic, then 6 random items with a max of 3 actives.
     starter = random.choice(STARTERS)
     relic = random.choice(RELICS)
 
@@ -149,6 +154,10 @@ async def random_build(god):
     return msg
 
 async def get_item_info(item_name):
+
+    # currently only returns a wiki link as i wasnt able to get past 403 errors when trying to scrape the smite wiki
+    # a potential future solution is to try again with a different website like smitesource
+
     # Remove "ACTIVE: " prefix if present
     clean_name = item_name.replace("ACTIVE: ", "")
     
@@ -161,6 +170,8 @@ async def get_item_info(item_name):
     return f"**{clean_name}**\n{wiki_url}"
 
 async def gacha_links():
+    # relevant links rarely change and their amount is low, so hardcoding them is fine for now.
+    # If more links are added in the future, it may be worth loading from a file.
     msg = "## Honkai Star Rail\n"
     msg += "Prydwen, List of HSR characters - <https://www.prydwen.gg/star-rail/characters/>\n"
     msg += "Star Rail Station, Warp tracker - <https://starrailstation.com/en/warp#char_event>\n"
@@ -177,6 +188,12 @@ async def gacha_links():
     msg += "Wuwa Interactive Map - <https://wuthering-waves-map.appsample.com/>\n"
 
     return msg
+
+# hsr_banners and wuwa_banners have different implementations due to differences in the structure of the source webpages
+
+# both functions could be refactored to share common code for fetching and parsing tables,
+# but ill only bother with that if i add commands for a third gacha game,
+# because by that point gacha commands will be moved to a separate file to avoid clutter.
 
 async def hsr_banners():
     url = "https://game8.co/games/Honkai-Star-Rail/archives/408381"
